@@ -19,49 +19,27 @@ class CadastroUsuario extends React.Component{
         this.service = new UsuarioService();
     }
 
-    validar() {
-        const msgs = []
-
-        if(!this.state.nome) {
-            msgs.push('O campo nome é obigatorio')
-        }
-        if(!this.state.email){
-            msgs.push('O campo email é obrigatorio.')
-        }else if( !this.state.email.match(/^[a-z0-9]+@[a-z0-9]+\.[a-z]/) ){
-            msgs.push('Informe um email válido')
-        }
-        
-        if ( !this.state.senha || !this.state.senhaRepeticao){
-            msgs.push('Digite sa senha 2x.')
-        }else if( this.state.senha !== this.state.senhaRepeticao){
-            msgs.push('As senhas digitadas não coincidem')
-        }
-        return msgs;
-    }
 
     cadastrar = () => {
-         const msgs = this.validar();
 
-         if(msgs && msgs.length > 0){
-            msgs.forEach(( msg, index ) => {
-              mensagemErro(msg)
-            });
-            return false;
+         const {nome, email, senha, senhaRepeticao} = this.state
+         const usuario = {nome, email, senha, senhaRepeticao }
+
+         try{
+            this.service.validar(usuario);
+         }catch(erro){
+            const msgs = erro.mensagens;
+            msgs.forEach(msg => mensagemErro(msg))
          }
+         
 
-        const usuario = {
-            nome: this.state.nome,
-            email: this.state.email,
-            senha: this.state.senha
-        }
-
-    this.service.salvar(usuario)
-        .then( response => {
-            mensagemSucesso('Usuário cadastrado com sucesso. Faça o login para acessa o sistema')
-            this.props.history.push('/login')
-        }).catch( error => {
-            mensagemErro(error.response.data)
-        })
+        this.service.salvar(usuario)
+            .then( response => {
+               mensagemSucesso('Usuário cadastrado com sucesso. Faça o login para acessa o sistema')
+               this.props.history.push('/login')
+            }).catch( error => {
+                mensagemErro(error.response.data)
+            })
 
     }
 
