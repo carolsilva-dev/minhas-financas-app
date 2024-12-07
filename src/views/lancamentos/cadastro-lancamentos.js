@@ -23,6 +23,7 @@ class CadastroLancamentos extends React.Component {
         atualizando: false
     }
 
+
     
     constructor() {
        super();

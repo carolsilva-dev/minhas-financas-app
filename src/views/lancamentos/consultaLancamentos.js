@@ -57,6 +57,8 @@ class ConsultaLancamentos extends React.Component {
       this.props.history.push(`/cadastro-lancamentos/${id}`);
    }
 
+   
+
    abrirConfirmacao = (lancamento) => {
     // Verifica se o lançamento contém o ID e o define no estado
     if (lancamento && lancamento.id) {
@@ -94,17 +96,35 @@ class ConsultaLancamentos extends React.Component {
         this.props.history.push('/cadastro-lancamentos')
      }
 
+ 
+     alterarStatus = (lancamento, status) => {
+        this.service
+            .alterarStatus(lancamento.id, status)
+            .then(response => {
+                const lancamentos = [...this.state.lancamentos]; // Cópia do array de lançamentos
+                const index = lancamentos.findIndex(l => l.id === lancamento.id); // Busca o índice correto
+                
+                if (index !== -1) {
+                    lancamentos[index] = { ...lancamento, status }; // Atualiza o status no lançamento
+                    this.setState({ lancamentos }); // Atualiza o estado
+                    mensagemSucesso("Status atualizado com sucesso");
+                }
+            })
+            .catch(error => {
+                mensagemErro("Ocorreu um erro ao tentar atualizar o status do lançamento");
+            });
+    };
+    
 
+    render() {
+         const meses = this.service.obterListaMeses();
+         const tipos = this.service.obterListaTipos();
 
-   render() {
-      const meses = this.service.obterListaMeses();
-      const tipos = this.service.obterListaTipos();
-
-      const confirmDialogFooter = (
-          <div>
-              <Button label="Confirmar" icon="pi pi-check" onClick={this.deletar} /> 
-              <Button label="Cancelar" icon="pi pi-times" onClick={this.cancelarDelecao} /> 
-          </div>
+         const confirmDialogFooter = (
+            <div>
+               <Button label="Confirmar" icon="pi pi-check" onClick={this.deletar} /> 
+               <Button label="Cancelar" icon="pi pi-times" onClick={this.cancelarDelecao} /> 
+           </div>
       );
 
       return (
@@ -146,8 +166,8 @@ class ConsultaLancamentos extends React.Component {
                      </FormGroup>
                      <br />
                      
-                     <button onClick={this.buscar} type="button" className="btn btn-success">Buscar</button>
-                     <button onClick={this.preparaFormularioCadastro} type="button" className="btn btn-danger">Cadastrar</button>
+                     <button onClick={this.buscar} type="button" className="btn btn-success"><i className= "pi pi-search"></i> Buscar</button>
+                     <button onClick={this.preparaFormularioCadastro} type="button" className="btn btn-danger"><i className= "pi pi-plus"></i> Cadastrar</button>
                  </div>
              </div>
              <br/>
@@ -157,6 +177,7 @@ class ConsultaLancamentos extends React.Component {
                            <LancamentosTable lancamentos={this.state.lancamentos}
                                              deleteAction={this.abrirConfirmacao}
                                              editAction={this.editar}
+                                             alterarStatus={this.alterarStatus}
                             />    
                       </div>
                   </div>
