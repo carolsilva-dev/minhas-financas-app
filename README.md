@@ -1,6 +1,6 @@
 ![image](https://img.freepik.com/fotos-premium/calculadora-e-caderno-em-pedacos-de-papel-multicoloridos-conceito-de-desktop_438099-1349.jpg)
 
-## APP Minhas Finaças
+## APP Minhas Finanças
 
 ### Para que serve?
 - Esta é a interface da aplicação minhas finanças app, sua função é gerenciar as receitas e despesas do usuario com base nos seus lançamentos. 
